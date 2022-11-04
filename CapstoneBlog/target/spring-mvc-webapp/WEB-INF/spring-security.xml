@@ -1,0 +1,108 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+ http://www.springframework.org/schema/security
+ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <beans:bean id="webexpressionHandler" 
+                class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler"/>
+    
+    <beans:bean id="encoder"
+                class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    
+    <http pattern="/css/**" security="none" />
+    <http pattern="/js/**" security="none" />
+    <http pattern="/fonts/**" security="none" /> 
+
+    <http auto-config="true" use-expressions="false">
+        <form-login login-processing-url="/j_spring_security_check"
+                    login-page="/login"
+                    authentication-failure-url="/login?login_error=1"/>
+    
+        <intercept-url pattern="/"
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        
+        <intercept-url pattern="/addPage" 
+                       access="ROLE_ADMIN"/> 
+        <intercept-url pattern="/addUser" 
+                       access="ROLE_ADMIN"/>  
+        <intercept-url pattern="/addUserForm" 
+                       access="ROLE_ADMIN"/>  
+        <intercept-url pattern="/admin" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/approvalForm" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/articleDetails" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/categorySearch" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/compose" 
+                       access="ROLE_EDITOR"/>
+        <intercept-url pattern="/createAccount" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/createNewUser" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/createPage" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/createPost" 
+                       access="ROLE_EDITOR"/>
+        <intercept-url pattern="/deletePost" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/deletePage" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/deleteUser" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/displayAddPage" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/displayApprovalForm" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/displayAdminPage" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/displayApprovalForm" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/displayArticleDetails" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/displayMatchingArticles" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/displayPage" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/displayPostingPage" 
+                       access="ROLE_EDITOR"/>
+        <intercept-url pattern="/displayUserList" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/displayUserForm" 
+                       access="ROLE_ADMIN"/>
+        <intercept-url pattern="/index" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/login" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/pageDetails" 
+                       access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/**"
+                       access="ROLE_USER"/>    
+    </http>
+     
+    <authentication-manager>
+        <authentication-provider>
+            <password-encoder ref="encoder"/>
+            <jdbc-user-service id="userService"
+                               data-source-ref="dataSource"
+                               users-by-username-query=
+                               
+                "SELECT username, password, enabled FROM cmsblog.user WHERE username=?"
+                
+                               authorities-by-username-query=
+                               
+                "SELECT user.username as username, role.role as role 
+                 FROM cmsblog.user 
+                 INNER JOIN cmsblog.user_role ON user.id = user_role.user_id 
+                 INNER JOIN cmsblog.role ON user_role.role_id = role.id
+                 WHERE user.username = ?" />
+                
+        </authentication-provider>
+    </authentication-manager>
+    
+
+</beans:beans>

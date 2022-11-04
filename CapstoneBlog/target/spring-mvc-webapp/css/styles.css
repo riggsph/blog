@@ -1,0 +1,11 @@
+h1 {
+    text-align: center;
+}
+
+.title-label {
+    text-align: left;
+}
+
+#logoutDisplay {
+    text-align: right;
+}

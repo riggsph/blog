@@ -1,0 +1,9 @@
+@font-face {
+    font-family: verdana;
+    src: url(verdana.ttf);
+}
+
+body {
+    background-color: #FCD299;
+    font-family: verdana;
+}
